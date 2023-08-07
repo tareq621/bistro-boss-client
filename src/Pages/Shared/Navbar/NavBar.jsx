@@ -12,6 +12,12 @@ const NavBar = () => {
       <li>
         <Link to="/order/salad">ORDER FOOD</Link>
       </li>
+      <li>
+        <Link to="/login">LOGIN</Link>
+      </li>
+      <li>
+        <Link to="/signUp">SIGN UP</Link>
+      </li>
     </>
   );
   return (
