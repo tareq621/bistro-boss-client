@@ -3,81 +3,152 @@ import loginBackground from "../../assets/others/authentication.png";
 import facebook from "../../assets/icon/facebook.png";
 import google from "../../assets/icon/google.png";
 import github from "../../assets/icon/github.png";
+import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../providers/AuthProvider";
+import { useForm } from "react-hook-form";
+import { Helmet } from "react-helmet-async";
+
 const SignUp = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const { createUser } = useContext(AuthContext);
+
+  const onSubmit = (data) => {
+    console.log(data);
+    createUser(data.email, data.password).then((result) => {
+      const loggedUser = result.loggedUser;
+      console.log(loggedUser);
+    });
+    reset();
+  };
+
+  console.log(watch("example"));
+
   return (
-    <div
-      style={{
-        backgroundImage: `url("${loginBackground}")`,
-      }}
-      className="hero min-h-screen"
-    >
-      <div className="hero-content flex-col md:flex-row gap-60">
-        <div>
-          <img src={loginImage} alt="" />
-        </div>
-        <div className="card w-full max-w-sm">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold">Login</h1>
+    <>
+      <Helmet>
+        <title>Bistro Boss | Sign Up</title>
+      </Helmet>
+      <div
+        style={{
+          backgroundImage: `url("${loginBackground}")`,
+        }}
+        className="hero min-h-screen"
+      >
+        <div className="hero-content flex-col md:flex-row-reverse gap-60">
+          <div>
+            <img src={loginImage} alt="" />
           </div>
-          <form className="card-body">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                placeholder="Type Here"
-                className="input input-bordered"
-              />
+          <div className="card w-full max-w-sm">
+            <div className="text-center">
+              <h1 className="text-3xl font-bold">Sign Up</h1>
             </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Email</span>
-              </label>
-              <input
-                type="email"
-                name="email"
-                placeholder="Type Here"
-                className="input input-bordered"
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Password</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Type the text above"
-                name="captcha"
-                className="input input-bordered"
-              />
-            </div>
-            <div className="form-control mt-6">
-              <input
-                className="btn btn-primary"
-                type="submit"
-                value="Sign Up"
-              />
-            </div>
-          </form>
-          <div className="text-center">
-            <h1 className="text-1xl pb-3 text-[#D1A054]">
-              New here?{" "}
-              <span className="text-[#D1A054] text-1xl font-medium">
-                Create a New Account
-              </span>
-            </h1>
-            <h1 className="pb-3">Or sign in with</h1>
-            <div className="flex justify-center gap-10">
-              <img src={facebook} alt="" />
-              <img src={google} alt="" />
-              <img src={github} alt="" />
+            <form onSubmit={handleSubmit(onSubmit)} className="card-body">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Name</span>
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  {...register("name", { required: true })}
+                  placeholder="Type Here"
+                  className="input input-bordered focus:outline-none"
+                />
+                {errors.name && (
+                  <span className="text-red-500 mt-2">Name is required</span>
+                )}
+              </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Email</span>
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  {...register("email", { required: true })}
+                  placeholder="Type Here"
+                  className="input input-bordered focus:outline-none"
+                />
+                {errors.email && (
+                  <span className="text-red-500 mt-2">Name is required</span>
+                )}
+              </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Password</span>
+                </label>
+                <input
+                  type="password"
+                  placeholder="Type your password"
+                  name="password"
+                  {...register("password", {
+                    required: true,
+                    minLength: 6,
+                    maxLength: 20,
+                    pattern: /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z])/,
+                  })}
+                  className="input input-bordered focus:outline-none"
+                />
+                {errors.password?.type === "required" && (
+                  <p className="text-red-500 mt-2 shadow-lg border bg-slate-100 p-2">
+                    Password field is required
+                  </p>
+                )}
+                {errors.password?.type === "minLength" && (
+                  <p className="text-red-500 mt-2 shadow-lg border bg-slate-100 p-2">
+                    Password must be 6 character.
+                  </p>
+                )}
+                {errors.password?.type === "maxLength" && (
+                  <p className="text-red-500 mt-2 shadow-lg border bg-slate-100 p-2">
+                    Password must be at least 20 character.
+                  </p>
+                )}
+                {errors.password?.type === "pattern" && (
+                  <p className="text-red-500 mt-2 shadow-lg border bg-slate-100 p-2">
+                    Password must have one uppercase, one lowercase, one number
+                    and special character.
+                  </p>
+                )}
+              </div>
+              <div className="form-control mt-6">
+                <input
+                  className="py-3 rounded-sm font-semibold bg-[#D1A054]
+                border-none text-white hover:bg-none"
+                  type="submit"
+                  value="Sign Up"
+                />
+              </div>
+            </form>
+            <div className="text-center">
+              <h1 className="text-1xl pb-3 text-[#D1A054]">
+                Already registered?{" "}
+                <Link
+                  to="/login"
+                  className="text-[#D1A054] text-1xl font-medium"
+                >
+                  Go to log in
+                </Link>
+              </h1>
+              <h1 className="pb-3">Or sign up with</h1>
+              <div className="flex justify-center gap-10">
+                <img src={facebook} alt="" />
+                <img src={google} alt="" />
+                <img src={github} alt="" />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
