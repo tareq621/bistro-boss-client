@@ -3,7 +3,7 @@ import loginBackground from "../../assets/others/authentication.png";
 import facebook from "../../assets/icon/facebook.png";
 import google from "../../assets/icon/google.png";
 import github from "../../assets/icon/github.png";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 // react captcha
 import {
