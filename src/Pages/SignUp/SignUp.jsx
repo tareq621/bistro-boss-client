@@ -9,6 +9,7 @@ import { AuthContext } from "../../providers/AuthProvider";
 import { useForm } from "react-hook-form";
 import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
+import SocialLogin from "../Shared/SocialLogin/SocialLogin";
 
 const SignUp = () => {
   const {
@@ -22,27 +23,36 @@ const SignUp = () => {
   const { createUser, userUpdate, logOut } = useContext(AuthContext);
   const navigate = useNavigate();
   const onSubmit = (data) => {
-    console.log(data);
     createUser(data.email, data.password).then((result) => {
       const loggedUser = result.user;
       console.log(loggedUser);
-
       userUpdate(data.name, data.photoURL)
         .then(() => {
-          console.log("User profile Updated!!");
-          reset();
-          Swal.fire({
-            position: "top-center",
-            icon: "success",
-            title: "Your Account is Created",
-            showConfirmButton: false,
-            timer: 1700,
-          });
-          logOut()
-            .then(() => {
-              navigate("/login");
-            })
-            .catch((error) => console.log(error));
+          const saveUser = { name: data.name, email: data.email };
+          fetch("http://localhost:5000/users", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+            },
+            body: JSON.stringify(saveUser),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.insertedId) {
+                console.log("User profile Updated!!");
+                reset();
+                Swal.fire({
+                  position: "top-center",
+                  icon: "success",
+                  title: "Your Account is Created",
+                  showConfirmButton: false,
+                  timer: 1700,
+                });
+                logOut().then(() => {
+                  navigate("/login");
+                });
+              }
+            });
         })
         .catch((error) => {
           console.log(error);
@@ -174,11 +184,7 @@ const SignUp = () => {
                 </Link>
               </h1>
               <h1 className="pb-3">Or sign up with</h1>
-              <div className="flex justify-center gap-10">
-                <img src={facebook} alt="" />
-                <img src={google} alt="" />
-                <img src={github} alt="" />
-              </div>
+              <SocialLogin></SocialLogin>
             </div>
           </div>
         </div>

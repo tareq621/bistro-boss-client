@@ -1,8 +1,5 @@
 import loginImage from "../../assets/others/authentication2.png";
 import loginBackground from "../../assets/others/authentication.png";
-import facebook from "../../assets/icon/facebook.png";
-import google from "../../assets/icon/google.png";
-import github from "../../assets/icon/github.png";
 import { useContext, useEffect, useState } from "react";
 
 // react captcha
@@ -15,6 +12,7 @@ import { AuthContext } from "../../providers/AuthProvider";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
+import SocialLogin from "../Shared/SocialLogin/SocialLogin";
 
 const Login = () => {
   const [disabled, setDisabled] = useState(true);
@@ -132,11 +130,7 @@ const Login = () => {
                 </Link>
               </h1>
               <h1 className="pb-3">Or sign in with</h1>
-              <div className="flex justify-center gap-10">
-                <img src={facebook} alt="" />
-                <img src={google} alt="" />
-                <img src={github} alt="" />
-              </div>
+              <SocialLogin></SocialLogin>
             </div>
           </div>
         </div>
